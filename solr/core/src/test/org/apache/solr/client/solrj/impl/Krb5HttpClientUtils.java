@@ -38,8 +38,8 @@ public class Krb5HttpClientUtils {
   public static void setup(Http2SolrClient http2Client, String principalName) {
     HttpAuthenticationStore authenticationStore = new HttpAuthenticationStore();
     authenticationStore.addAuthentication(createSPNEGOAuthentication(principalName));
-    http2Client.getHttpClient().setAuthenticationStore(authenticationStore);
     http2Client.getProtocolHandlers().put(new WWWAuthenticationProtocolHandler(http2Client.getHttpClient()));
+    http2Client.getHttpClient().setAuthenticationStore(authenticationStore);
   }
 
   private static SPNEGOAuthentication createSPNEGOAuthentication(String principalName) {

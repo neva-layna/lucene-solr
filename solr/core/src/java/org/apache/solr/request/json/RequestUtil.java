@@ -69,7 +69,7 @@ public class RequestUtil {
 
       for (ContentStream cs : req.getContentStreams()) {
         String contentType = cs.getContentType();
-        if (contentType==null || !contentType.contains("/json")) {
+        if (contentType==null || (!contentType.contains("/json"))) {
           throw new SolrException(SolrException.ErrorCode.BAD_REQUEST, "Bad contentType for search handler :" + contentType + " request="+req);
         }
 

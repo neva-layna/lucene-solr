@@ -93,6 +93,7 @@ import org.eclipse.jetty.http.HttpHeader;
 import org.eclipse.jetty.http.HttpMethod;
 import org.eclipse.jetty.http2.client.HTTP2Client;
 import org.eclipse.jetty.http2.client.http.HttpClientTransportOverHTTP2;
+import org.eclipse.jetty.io.ClientConnector;
 import org.eclipse.jetty.util.BlockingArrayQueue;
 import org.eclipse.jetty.util.Fields;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
@@ -208,14 +209,28 @@ public class Http2SolrClient extends SolrClient {
       } else {
         log.debug("Create Http2SolrClient with HTTP/1.1 transport");
       }
-      transport = new HttpClientTransportOverHTTP(2);
-      httpClient = new HttpClient(transport, sslContextFactory);
+
+      ClientConnector clientConnector = new ClientConnector();
+      clientConnector.setReuseAddress(true);
+      clientConnector.setSslContextFactory(sslContextFactory);
+      clientConnector.setSelectors(2);
+
+      transport = new HttpClientTransportOverHTTP(clientConnector);
+      httpClient = new HttpClient(transport);
       if (builder.maxConnectionsPerHost != null) httpClient.setMaxConnectionsPerDestination(builder.maxConnectionsPerHost);
     } else {
+
       log.debug("Create Http2SolrClient with HTTP/2 transport");
-      HTTP2Client http2client = new HTTP2Client();
+
+      ClientConnector clientConnector = new ClientConnector();
+      clientConnector.setReuseAddress(true);
+      clientConnector.setSslContextFactory(sslContextFactory);
+      clientConnector.setSelectors(2);
+
+      HTTP2Client http2client = new HTTP2Client(clientConnector);
+
       transport = new HttpClientTransportOverHTTP2(http2client);
-      httpClient = new HttpClient(transport, sslContextFactory);
+      httpClient = new HttpClient(transport);
       httpClient.setMaxConnectionsPerDestination(4);
     }
 
@@ -243,7 +258,6 @@ public class Http2SolrClient extends SolrClient {
     if (closeClient) {
       try {
         ExecutorService executor = (ExecutorService) httpClient.getExecutor();
-        httpClient.setStopTimeout(1000);
         httpClient.stop();
         ExecutorUtil.shutdownAndAwaitTermination(executor);
       } catch (Exception e) {
@@ -613,13 +627,13 @@ public class Http2SolrClient extends SolrClient {
         for (ContentStream contentStream : streams) {
           String contentType = contentStream.getContentType();
           if (contentType == null) {
-            contentType = BinaryResponseParser.BINARY_CONTENT_TYPE; // default
+            contentType = "multipart/form-data"; // default
           }
           String name = contentStream.getName();
           if (name == null) {
             name = "";
           }
-          HttpFields fields = new HttpFields();
+          HttpFields.Mutable fields = HttpFields.build(1);
           fields.add(HttpHeader.CONTENT_TYPE, contentType);
           content.addFilePart(name, contentStream.getName(), new InputStreamContentProvider(contentStream.getStream()), fields);
         }

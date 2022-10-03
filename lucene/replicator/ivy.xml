@@ -33,10 +33,11 @@
     
     <dependency org="org.eclipse.jetty" name="jetty-server" rev="${/org.eclipse.jetty/jetty-server}" conf="jetty"/>
     <dependency org="javax.servlet" name="javax.servlet-api" rev="${/javax.servlet/javax.servlet-api}" conf="jetty"/>
+<!--    <dependency org="org.eclipse.jetty.toolchain" name="jetty-servlet-api" rev="${/org.eclipse.jetty/jetty-servlet}" conf="jetty"/>-->
     <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="${/org.eclipse.jetty/jetty-servlet}" conf="jetty"/>
     <dependency org="org.eclipse.jetty" name="jetty-util" rev="${/org.eclipse.jetty/jetty-util}" conf="jetty"/>
     <dependency org="org.eclipse.jetty" name="jetty-io" rev="${/org.eclipse.jetty/jetty-io}" conf="jetty"/>
-    <dependency org="org.eclipse.jetty" name="jetty-continuation" rev="${/org.eclipse.jetty/jetty-continuation}" conf="jetty"/>
+<!--    <dependency org="org.eclipse.jetty" name="jetty-continuation" rev="${/org.eclipse.jetty/jetty-continuation}" conf="jetty"/>-->
     <dependency org="org.eclipse.jetty" name="jetty-http" rev="${/org.eclipse.jetty/jetty-http}" conf="jetty"/>
 
     <dependency org="commons-logging" name="commons-logging" rev="${/commons-logging/commons-logging}" conf="logging"/>
